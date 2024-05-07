@@ -2,7 +2,7 @@ from constants import *
 import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter
-from utils import select_filename
+from utils import select_open_filename, select_save_filename
 
 
 class TabLabel(Label):
@@ -41,12 +41,22 @@ class PIGEditorController:
         self.tab_counter = 1
 
     def load_image(self):
-        filename = select_filename()
+        filename = select_open_filename()
         if filename != '':
             tab_view = TabView(self.editor.tabbed_view, filename=filename)
             self.tab_views.append(tab_view)
         else:
             messagebox.showerror("Error", "No file selected")
+
+    def save_image(self):
+        filename = select_save_filename()
+        if filename != '':
+            image = self._get_selected_image()
+            with open(filename, 'w') as file:
+                image.save(file)
+        else:
+            messagebox.showerror("Error", "No save file selected")
+
 
     def make_greyscale_image(self):
         self._apply_simple_image_operation(ImageOps.grayscale, 'greyscale')
@@ -213,6 +223,8 @@ class PIGMenuBar(tk.Menu):
     def create_file_menu(self):
         file_menu = tk.Menu(self, tearoff=0)
         file_menu.add_command(label='Load Image', command=self.controller.load_image)
+        file_menu.add_command(label='Save Image', command=self.controller.save_image)
+        file_menu.add_separator()
         file_menu.add_command(label='Exit', command=self.controller.exit_app)
         self.add_cascade(label='File', menu=file_menu)
 
