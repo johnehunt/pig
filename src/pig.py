@@ -94,20 +94,79 @@ class PIGEditorController:
             args = answer
         self._apply_simple_image_operation(ImageOps.solarize, 'solarize', args=args)
 
-    def find_edges_in_image(self):
+
+    def _get_selected_image(self):
         # find currently selected tab
         selected_tab_view = self.editor.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
-        # apply edge finding function
-        image_with_edges = selected_tab_image.filter(ImageFilter.FIND_EDGES)
-        text_label = 'edges' + str(self.tab_counter)
+        return selected_tab_image
+
+    def find_edges_in_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'edges', filter=ImageFilter.FIND_EDGES)
+
+    def blur_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'blur', filter=ImageFilter.BLUR)
+
+    def contour_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'contour', filter=ImageFilter.CONTOUR)
+
+    def smooth_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'smooth', filter=ImageFilter.SMOOTH)
+
+    def sharpen_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'sharpen', filter=ImageFilter.SHARPEN)
+
+    def emboss_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'emboss', filter=ImageFilter.EMBOSS)
+
+    def edge_enhance_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'edge enhance', filter=ImageFilter.EDGE_ENHANCE)
+
+    def detail_image(self):
+        selected_tab_image = self._get_selected_image()
+        # Select the operation
+        image_method = selected_tab_image.filter
+        # Apply the filter
+        self._apply_image_method(image_method, 'detail', filter=ImageFilter.DETAIL)
+
+    def _apply_image_method(self, image_method, type_of_method='filter', filter=None):
+        image_with_edges = image_method(filter)
+        text_label = type_of_method + str(self.tab_counter)
         tab_view = TabView(self.editor.tabbed_view, image=image_with_edges, text_label=text_label)
+        self.tab_views.append(tab_view)
         self.tab_counter = self.tab_counter + 1
 
     def _apply_simple_image_operation(self, image_op=None, type_of_op='', args=None):
         # find currently selected tab
-        selected_tab_view = self.editor.get_current_tab_view()
-        selected_tab_image = selected_tab_view.image
+        selected_tab_image = self._get_selected_image()
         # applying image operation
         if args is None:
             new_image = image_op(selected_tab_image)
@@ -166,7 +225,15 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Invert Image', command=self.controller.invert_image)
         image_menu.add_separator()
         image_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
-        image_menu.add_command(label='Find edges', command=self.controller.find_edges_in_image)
+        image_menu.add_command(label='Blur', command=self.controller.blur_image)
+        image_menu.add_command(label='Contour', command=self.controller.contour_image)
+        image_menu.add_command(label='Detail', command=self.controller.detail_image)
+        image_menu.add_command(label='Emboss', command=self.controller.emboss_image)
+        image_menu.add_command(label='Smooth', command=self.controller.smooth_image)
+        image_menu.add_command(label='Sharpen', command=self.controller.sharpen_image)
+        image_menu.add_separator()
+        image_menu.add_command(label='Find Edges', command=self.controller.find_edges_in_image)
+        image_menu.add_command(label='Edge Enhance', command=self.controller.edge_enhance_image)
         image_menu.add_separator()
         image_menu.add_command(label='Colorize Image', command=self.controller.colorize_image)
         image_menu.add_command(label='Posterize Image', command=self.controller.posterize_image)
