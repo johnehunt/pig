@@ -4,12 +4,12 @@ from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter
 from utils import select_filename
 
+
 class TabLabel(Label):
     def __init__(self, parent, photo_image=None, image=None, filename=None):
         super().__init__(parent, image=photo_image)
         self.image = image
         self.filename = filename
-
 
 
 class TabView:
@@ -39,7 +39,6 @@ class PIGEditorController:
         self.editor = editor
         self.tab_views = []
         self.tab_counter = 1
-
 
     def load_image(self):
         filename = select_filename()
@@ -74,7 +73,7 @@ class PIGEditorController:
             messagebox.showerror("Error", "Colorize can only be applied to greyscale images")
 
     def posterize_image(self):
-        args=1
+        args = 1
         answer = simpledialog.askinteger(title="Bits Channel Input",
                                          prompt="The number of bits to keep for each channel (1-8).",
                                          initialvalue=1,
@@ -127,7 +126,6 @@ class PIGEditorController:
         tab_view = TabView(self.editor.tabbed_view, image=new_image, text_label=text_label)
         self.tab_views.append(tab_view)
         self.tab_counter = self.tab_counter + 1
-
 
     def on_tab_click(self, event):
         print('widget:', event.widget)
@@ -196,7 +194,7 @@ class PIGEditor:
         # Set up menu handling on tabs
         # bind function to notebook
         self.tabbed_view.bind('<Button-3>', self.controller.on_tab_click)
-        self.tabbed_view.bind('<Button-2>', self.controller.on_tab_click) # for mac users
+        self.tabbed_view.bind('<Button-2>', self.controller.on_tab_click)  # for mac users
 
         # Set up menus
         self.menubar = PIGMenuBar(self.root, self.controller)
