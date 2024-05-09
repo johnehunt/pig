@@ -1,5 +1,5 @@
 # To get the dialog box to open when required
-from tkinter import filedialog
+from tkinter import filedialog, colorchooser
 from constants import IMAGE_FILE_TYPES
 
 
@@ -13,3 +13,10 @@ def select_open_filename():
 def select_save_filename():
     filename = filedialog.asksaveasfilename(title='Save Image', filetypes=IMAGE_FILE_TYPES)
     return filename
+
+
+def choose_color(prompt):
+    # variable to store hexadecimal code of color
+    color_code = colorchooser.askcolor(title=prompt)
+    print(color_code[0])
+    return color_code[0]

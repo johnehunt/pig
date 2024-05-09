@@ -2,7 +2,7 @@ from constants import *
 import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter
-from utils import select_open_filename, select_save_filename
+from utils import select_open_filename, select_save_filename, choose_color
 
 
 class TabLabel(Label):
@@ -27,9 +27,10 @@ class TabView:
                               filename=filename)
         self.label.place(x=10, y=10)
         if text_label is None:
-            self.tabbed_view.add(self.label, text=filename)
-        else:
-            self.tabbed_view.add(self.label, text=text_label)
+            text_label = filename
+
+        self.tabbed_view.add(self.label, text=text_label)
+        self.tabbed_view.select(self.label)
 
 
 class PIGEditorController:
@@ -39,6 +40,12 @@ class PIGEditorController:
         self.editor = editor
         self.tab_views = []
         self.tab_counter = 1
+
+    def get_current_tab_view(self):
+        # This code gets the currently selected tab
+        selected_tab_id = self.editor.tabbed_view.select()
+        label = self.editor.tabbed_view.nametowidget(selected_tab_id)
+        return label
 
     def load_image(self):
         filename = select_open_filename()
@@ -74,10 +81,12 @@ class PIGEditorController:
         self._apply_simple_image_operation(ImageOps.invert, 'invert')
 
     def colorize_image(self):
-        selected_tab_view = self.editor.get_current_tab_view()
+        selected_tab_view = self.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
         if selected_tab_image.mode == "L":
-            args = ('blue', 'white')
+            replacement_black_colour = choose_color('Replace black with')
+            replace_white_colour = choose_color('Replace white with')
+            args = (replacement_black_colour, replace_white_colour)
             self._apply_simple_image_operation(ImageOps.colorize, 'colorize', args)
         else:
             messagebox.showerror("Error", "Colorize can only be applied to greyscale images")
@@ -104,68 +113,44 @@ class PIGEditorController:
             args = answer
         self._apply_simple_image_operation(ImageOps.solarize, 'solarize', args=args)
 
+    def find_edges_in_image(self):
+        self._apply_filter_method('edges', ImageFilter.FIND_EDGES)
+
+    def blur_image(self):
+        self._apply_filter_method('blur', ImageFilter.BLUR)
+
+    def contour_image(self):
+        self._apply_filter_method('contour', ImageFilter.CONTOUR)
+
+    def smooth_image(self):
+        self._apply_filter_method( 'smooth', ImageFilter.SMOOTH)
+
+    def sharpen_image(self):
+        self._apply_filter_method('sharpen', ImageFilter.SHARPEN)
+
+    def emboss_image(self):
+        self._apply_filter_method('emboss', filter_to_apply=ImageFilter.EMBOSS)
+
+    def edge_enhance_image(self):
+        self._apply_filter_method('edge enhance', filter_to_apply=ImageFilter.EDGE_ENHANCE)
+
+    def detail_image(self):
+        self._apply_filter_method('detail', filter_to_apply=ImageFilter.DETAIL)
+
 
     def _get_selected_image(self):
         # find currently selected tab
-        selected_tab_view = self.editor.get_current_tab_view()
+        selected_tab_view = self.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
         return selected_tab_image
 
-    def find_edges_in_image(self):
+    def _apply_filter_method(self, label, filter_to_apply):
+        # get the image
         selected_tab_image = self._get_selected_image()
         # Select the operation
         image_method = selected_tab_image.filter
         # Apply the filter
-        self._apply_image_method(image_method, 'edges', filter=ImageFilter.FIND_EDGES)
-
-    def blur_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'blur', filter=ImageFilter.BLUR)
-
-    def contour_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'contour', filter=ImageFilter.CONTOUR)
-
-    def smooth_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'smooth', filter=ImageFilter.SMOOTH)
-
-    def sharpen_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'sharpen', filter=ImageFilter.SHARPEN)
-
-    def emboss_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'emboss', filter=ImageFilter.EMBOSS)
-
-    def edge_enhance_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'edge enhance', filter=ImageFilter.EDGE_ENHANCE)
-
-    def detail_image(self):
-        selected_tab_image = self._get_selected_image()
-        # Select the operation
-        image_method = selected_tab_image.filter
-        # Apply the filter
-        self._apply_image_method(image_method, 'detail', filter=ImageFilter.DETAIL)
+        self._apply_image_method(image_method, label, filter=filter_to_apply)
 
     def _apply_image_method(self, image_method, type_of_method='filter', filter=None):
         image_with_edges = image_method(filter)
@@ -264,8 +249,9 @@ class PIGEditor:
         self.root.title(TITLE)
 
         # Set the tabbed display
-        self.tabbed_view = ttk.Notebook(self.root, width=800, height=600)
+        self.tabbed_view = ttk.Notebook(self.root, width=WIDTH, height=HEIGHT)
         self.tabbed_view.pack(expand=True)
+        self.tabbed_view.enable_traversal()
 
         # Set up the controller
         self.controller = PIGEditorController(self, self.root)
@@ -278,12 +264,6 @@ class PIGEditor:
         # Set up menus
         self.menubar = PIGMenuBar(self.root, self.controller)
         self.root.config(menu=self.menubar)
-
-    def get_current_tab_view(self):
-        # This code gets the currently selected tab
-        selected_tab_id = self.tabbed_view.select()
-        label = self.tabbed_view.nametowidget(selected_tab_id)
-        return label
 
     def mainloop(self):
         """Delegate method that passes responsibility onto the root"""
