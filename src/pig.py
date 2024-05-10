@@ -9,28 +9,8 @@ class TabLabel(Label):
     def __init__(self, parent, photo_image=None, image=None, filename=None):
         super().__init__(parent, image=photo_image)
         self.image = image
+        self.photo_image = photo_image
         self.filename = filename
-
-
-class TabView:
-    def __init__(self, tabbed_view, filename=None, image=None, text_label=None):
-        self.tabbed_view = tabbed_view
-        if image is None:
-            self.image = Image.open(filename)
-        else:
-            self.image = image
-        self.photo_img = ImageTk.PhotoImage(self.image)
-        # Add image to a tab
-        self.label = TabLabel(self.tabbed_view,
-                              photo_image=self.photo_img,
-                              image=self.image,
-                              filename=filename)
-        self.label.place(x=10, y=10)
-        if text_label is None:
-            text_label = filename
-
-        self.tabbed_view.add(self.label, text=text_label)
-        self.tabbed_view.select(self.label)
 
 
 class PIGEditorController:
@@ -47,10 +27,25 @@ class PIGEditorController:
         label = self.editor.tabbed_view.nametowidget(selected_tab_id)
         return label
 
+    def get_tab_view(self, tabbed_view, filename=None, image=None):
+        if image is None:
+            image = Image.open(filename)
+
+        photo_img = ImageTk.PhotoImage(image)
+        # Add image to a tab
+        label = TabLabel(tabbed_view,
+                         image=image,
+                         photo_image=photo_img,
+                         filename=filename)
+        label.place(x=10, y=10)
+        return label
+
     def load_image(self):
         filename = select_open_filename()
         if filename != '':
-            tab_view = TabView(self.editor.tabbed_view, filename=filename)
+            tab_view = self.get_tab_view(self.editor.tabbed_view, filename=filename)
+            self.editor.tabbed_view.add(tab_view, text=filename)
+            self.editor.tabbed_view.select(tab_view)
             self.tab_views.append(tab_view)
         else:
             messagebox.showerror("Error", "No file selected")
@@ -155,7 +150,9 @@ class PIGEditorController:
     def _apply_image_method(self, image_method, type_of_method='filter', filter=None):
         image_with_edges = image_method(filter)
         text_label = type_of_method + str(self.tab_counter)
-        tab_view = TabView(self.editor.tabbed_view, image=image_with_edges, text_label=text_label)
+        tab_view = self.get_tab_view(self.editor.tabbed_view, image=image_with_edges)
+        self.editor.tabbed_view.add(tab_view, text=text_label)
+        self.editor.tabbed_view.select(tab_view)
         self.tab_views.append(tab_view)
         self.tab_counter = self.tab_counter + 1
 
@@ -177,7 +174,10 @@ class PIGEditorController:
         # Display greyscale image in a new tab
         text_label = type_of_op + str(self.tab_counter)
         # Create tab for tabbed view
-        tab_view = TabView(self.editor.tabbed_view, image=new_image, text_label=text_label)
+        tab_view = self.get_tab_view(self.editor.tabbed_view, image=new_image)
+
+        self.editor.tabbed_view.add(tab_view, text=text_label)
+        self.editor.tabbed_view.select(tab_view)
         self.tab_views.append(tab_view)
         self.tab_counter = self.tab_counter + 1
 
