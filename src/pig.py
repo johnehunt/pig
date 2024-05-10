@@ -2,7 +2,7 @@ from constants import *
 import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter
-from utils import select_open_filename, select_save_filename, choose_color
+from utils import select_open_filename, select_save_filename, choose_color_rgb
 
 
 class TabLabel(Label):
@@ -79,8 +79,8 @@ class PIGEditorController:
         selected_tab_view = self.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
         if selected_tab_image.mode == "L":
-            replacement_black_colour = choose_color('Replace black with')
-            replace_white_colour = choose_color('Replace white with')
+            replacement_black_colour = choose_color_rgb('Replace black with')
+            replace_white_colour = choose_color_rgb('Replace white with')
             args = (replacement_black_colour, replace_white_colour)
             self._apply_simple_image_operation(ImageOps.colorize, 'colorize', args)
         else:
@@ -182,10 +182,6 @@ class PIGEditorController:
         self.tab_counter = self.tab_counter + 1
 
     def on_tab_click(self, event):
-        print('widget:', event.widget)
-        print('x:', event.x)
-        print('y:', event.y)
-
         response = messagebox.askquestion('Delete Tab', 'Do you want to delete the tab?')
         if response == 'yes':
             nb = self.editor.tabbed_view

@@ -15,8 +15,7 @@ def select_save_filename():
     return filename
 
 
-def choose_color(prompt):
+def choose_color_rgb(prompt):
     # variable to store hexadecimal code of color
     color_code = colorchooser.askcolor(title=prompt)
-    print(color_code[0])
     return color_code[0]
