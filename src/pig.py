@@ -2,7 +2,7 @@ from constants import *
 import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter, ImageEnhance
-from utils import select_open_filename, select_save_filename, choose_color_rgb
+from utils import *
 
 
 class TabLabel(Label):
@@ -73,6 +73,15 @@ class PIGEditorController:
 
     def invert_image(self):
         self._apply_simple_image_operation(ImageOps.invert, 'invert')
+
+    def tint_image_red(self):
+        self._apply_simple_image_operation(tint_red, 'tint red')
+
+    def tint_image_green(self):
+        self._apply_simple_image_operation(tint_greed, 'tint green')
+
+    def tint_image_blue(self):
+        self._apply_simple_image_operation(tint_blue, 'tint blue')
 
     def colorize_image(self):
         selected_tab_view = self.get_current_tab_view()
@@ -249,6 +258,8 @@ class PIGMenuBar(tk.Menu):
         self.controller = controller
         self.create_file_menu()
         self.create_image_menu()
+        self.create_contrast_menu()
+        self.create_colour_menu()
 
     def create_file_menu(self):
         file_menu = tk.Menu(self, tearoff=0)
@@ -266,10 +277,6 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Mirror Image', command=self.controller.mirror_image)
         image_menu.add_command(label='Invert Image', command=self.controller.invert_image)
         image_menu.add_separator()
-        image_menu.add_command(label='Enhance Color', command=self.controller.enhance_color)
-        image_menu.add_command(label='Enhance Contrast', command=self.controller.enhance_contrast)
-        image_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
-        image_menu.add_command(label='Brighten', command=self.controller.brighten_image)
         image_menu.add_command(label='Blur', command=self.controller.blur_image)
         image_menu.add_command(label='Contour', command=self.controller.contour_image)
         image_menu.add_command(label='Detail', command=self.controller.detail_image)
@@ -285,6 +292,22 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Solarize Image', command=self.controller.solarize_image)
         image_menu.add_command(label='Quantize Image', command=self.controller.quantize_image)
         self.add_cascade(label='Image', menu=image_menu)
+
+
+    def create_contrast_menu(self):
+        contrast_menu = tk.Menu(self, tearoff=0)
+        contrast_menu.add_command(label='Enhance Contrast', command=self.controller.enhance_contrast)
+        contrast_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
+        contrast_menu.add_command(label='Brighten', command=self.controller.brighten_image)
+        self.add_cascade(label='Contrast', menu=contrast_menu)
+    def create_colour_menu(self):
+        color_menu = tk.Menu(self, tearoff=0)
+        color_menu.add_command(label='Enhance Color', command=self.controller.enhance_color)
+        color_menu.add_separator()
+        color_menu.add_command(label='Tint Red', command=self.controller.tint_image_red)
+        color_menu.add_command(label='Tint Green', command=self.controller.tint_image_green)
+        color_menu.add_command(label='Tint Blue', command=self.controller.tint_image_blue)
+        self.add_cascade(label='Color', menu=color_menu)
 
 
 class PIGEditor:
