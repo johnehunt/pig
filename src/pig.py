@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter, ImageEnhance
 from utils import *
+from cv_utils import *
 
 
 class TabLabel(Label):
@@ -83,6 +84,15 @@ class PIGEditorController:
     def tint_image_blue(self):
         self._apply_simple_image_operation(tint_blue, 'tint blue')
 
+    def select_red_in_image(self):
+        self._apply_simple_image_operation(highlight_red_elements, 'red')
+
+    def select_green_in_image(self):
+        self._apply_simple_image_operation(highlight_green_elements, 'green')
+
+    def select_blue_in_image(self):
+        self._apply_simple_image_operation(highlight_blue_elements, 'blue')
+
     def colorize_image(self):
         selected_tab_view = self.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
@@ -131,10 +141,10 @@ class PIGEditorController:
     def enhance_color(self):
         args = 3.0
         answer = simpledialog.askfloat(title="Enhance Color",
-                                         prompt="Value for enhance",
-                                         initialvalue=3.0,
-                                         parent=self.root,
-                                         minvalue=1.0, maxvalue=9.0)
+                                       prompt="Value for enhance",
+                                       initialvalue=3.0,
+                                       parent=self.root,
+                                       minvalue=1.0, maxvalue=9.0)
         if answer is not None:
             args = answer
         selected_tab_image = self._get_selected_image()
@@ -144,10 +154,10 @@ class PIGEditorController:
     def enhance_contrast(self):
         args = 3.0
         answer = simpledialog.askfloat(title="Enhance Contrast",
-                                         prompt="Value for enhance",
-                                         initialvalue=3.0,
-                                         parent=self.root,
-                                         minvalue=1.0, maxvalue=9.0)
+                                       prompt="Value for enhance",
+                                       initialvalue=3.0,
+                                       parent=self.root,
+                                       minvalue=1.0, maxvalue=9.0)
         if answer is not None:
             args = answer
         selected_tab_image = self._get_selected_image()
@@ -293,13 +303,13 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Quantize Image', command=self.controller.quantize_image)
         self.add_cascade(label='Image', menu=image_menu)
 
-
     def create_contrast_menu(self):
         contrast_menu = tk.Menu(self, tearoff=0)
         contrast_menu.add_command(label='Enhance Contrast', command=self.controller.enhance_contrast)
         contrast_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
         contrast_menu.add_command(label='Brighten', command=self.controller.brighten_image)
         self.add_cascade(label='Contrast', menu=contrast_menu)
+
     def create_colour_menu(self):
         color_menu = tk.Menu(self, tearoff=0)
         color_menu.add_command(label='Enhance Color', command=self.controller.enhance_color)
@@ -307,6 +317,10 @@ class PIGMenuBar(tk.Menu):
         color_menu.add_command(label='Tint Red', command=self.controller.tint_image_red)
         color_menu.add_command(label='Tint Green', command=self.controller.tint_image_green)
         color_menu.add_command(label='Tint Blue', command=self.controller.tint_image_blue)
+        color_menu.add_separator()
+        color_menu.add_command(label='Highlight Red', command=self.controller.select_red_in_image)
+        color_menu.add_command(label='Highlight Green', command=self.controller.select_green_in_image)
+        color_menu.add_command(label='Highlight Blue', command=self.controller.select_blue_in_image)
         self.add_cascade(label='Color', menu=color_menu)
 
 
