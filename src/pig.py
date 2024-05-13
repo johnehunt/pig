@@ -59,7 +59,6 @@ class PIGEditorController:
         else:
             messagebox.showerror("Error", "No save file selected")
 
-
     def make_greyscale_image(self):
         self._apply_simple_image_operation(ImageOps.grayscale, 'greyscale')
 
@@ -108,7 +107,6 @@ class PIGEditorController:
             args = answer
         self._apply_simple_image_operation(ImageOps.solarize, 'solarize', args=args)
 
-
     def quantize_image(self):
         args = 16
         answer = simpledialog.askinteger(title="Quantize Input",
@@ -144,7 +142,7 @@ class PIGEditorController:
         self._apply_filter_method('contour', ImageFilter.CONTOUR)
 
     def smooth_image(self):
-        self._apply_filter_method( 'smooth', ImageFilter.SMOOTH)
+        self._apply_filter_method('smooth', ImageFilter.SMOOTH)
 
     def sharpen_image(self):
         self._apply_filter_method('sharpen', ImageFilter.SHARPEN)
@@ -157,7 +155,6 @@ class PIGEditorController:
 
     def detail_image(self):
         self._apply_filter_method('detail', filter_to_apply=ImageFilter.DETAIL)
-
 
     def _get_selected_image(self):
         # find currently selected tab
@@ -243,7 +240,7 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Mirror Image', command=self.controller.mirror_image)
         image_menu.add_command(label='Invert Image', command=self.controller.invert_image)
         image_menu.add_separator()
-        image_menu.add_command(label='Enhance Contrast', command = self.controller.enhance_contrast)
+        image_menu.add_command(label='Enhance Contrast', command=self.controller.enhance_contrast)
         image_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
         image_menu.add_command(label='Blur', command=self.controller.blur_image)
         image_menu.add_command(label='Contour', command=self.controller.contour_image)
