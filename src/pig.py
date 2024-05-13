@@ -119,18 +119,44 @@ class PIGEditorController:
         selected_tab_image = self._get_selected_image()
         self._apply_image_method(selected_tab_image.quantize, 'quantize', args)
 
-    def enhance_contrast(self):
-        args = 3
-        answer = simpledialog.askinteger(title="Ehance Contrast",
-                                         prompt="Value for quantization",
-                                         initialvalue=3,
+    def enhance_color(self):
+        args = 3.0
+        answer = simpledialog.askfloat(title="Enhance Color",
+                                         prompt="Value for enhance",
+                                         initialvalue=3.0,
                                          parent=self.root,
-                                         minvalue=1, maxvalue=10)
+                                         minvalue=1.0, maxvalue=9.0)
+        if answer is not None:
+            args = answer
+        selected_tab_image = self._get_selected_image()
+        enhanced_image = ImageEnhance.Color(selected_tab_image)
+        self._apply_image_method(enhanced_image.enhance, 'enhance color', args)
+
+    def enhance_contrast(self):
+        args = 3.0
+        answer = simpledialog.askfloat(title="Enhance Contrast",
+                                         prompt="Value for enhance",
+                                         initialvalue=3.0,
+                                         parent=self.root,
+                                         minvalue=1.0, maxvalue=9.0)
         if answer is not None:
             args = answer
         selected_tab_image = self._get_selected_image()
         enhanced_image = ImageEnhance.Contrast(selected_tab_image)
         self._apply_image_method(enhanced_image.enhance, 'enhance contrast', args)
+
+    def brighten_image(self):
+        args = 3.0
+        answer = simpledialog.askfloat(title="Brighten Image",
+                                       prompt="Value to brighten",
+                                       initialvalue=3.0,
+                                       parent=self.root,
+                                       minvalue=1.0, maxvalue=9.0)
+        if answer is not None:
+            args = answer
+        selected_tab_image = self._get_selected_image()
+        enhanced_image = ImageEnhance.Brightness(selected_tab_image)
+        self._apply_image_method(enhanced_image.enhance, 'brighten image', args)
 
     def find_edges_in_image(self):
         self._apply_filter_method('edges', ImageFilter.FIND_EDGES)
@@ -240,8 +266,10 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Mirror Image', command=self.controller.mirror_image)
         image_menu.add_command(label='Invert Image', command=self.controller.invert_image)
         image_menu.add_separator()
+        image_menu.add_command(label='Enhance Color', command=self.controller.enhance_color)
         image_menu.add_command(label='Enhance Contrast', command=self.controller.enhance_contrast)
         image_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
+        image_menu.add_command(label='Brighten', command=self.controller.brighten_image)
         image_menu.add_command(label='Blur', command=self.controller.blur_image)
         image_menu.add_command(label='Contour', command=self.controller.contour_image)
         image_menu.add_command(label='Detail', command=self.controller.detail_image)
