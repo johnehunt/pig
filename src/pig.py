@@ -1,7 +1,7 @@
 from constants import *
 import tkinter as tk
 from tkinter import ttk, Label, messagebox, simpledialog
-from PIL import ImageTk, Image, ImageOps, ImageFilter
+from PIL import ImageTk, Image, ImageOps, ImageFilter, ImageEnhance
 from utils import select_open_filename, select_save_filename, choose_color_rgb
 
 
@@ -99,14 +99,40 @@ class PIGEditorController:
 
     def solarize_image(self):
         args = 128
-        answer = simpledialog.askinteger(title="Thrershold Input",
-                                         prompt="Value threshold value for solarize? \n(All pixels above this grayscale level are inverted)",
+        answer = simpledialog.askinteger(title="Threshold Input",
+                                         prompt="Threshold value for solarize? \n(All pixels above this grayscale level are inverted)",
                                          initialvalue=128,
                                          parent=self.root,
                                          minvalue=1, maxvalue=256)
         if answer is not None:
             args = answer
         self._apply_simple_image_operation(ImageOps.solarize, 'solarize', args=args)
+
+
+    def quantize_image(self):
+        args = 16
+        answer = simpledialog.askinteger(title="Quantize Input",
+                                         prompt="Value for quantization",
+                                         initialvalue=16,
+                                         parent=self.root,
+                                         minvalue=1, maxvalue=32)
+        if answer is not None:
+            args = answer
+        selected_tab_image = self._get_selected_image()
+        self._apply_image_method(selected_tab_image.quantize, 'quantize', args)
+
+    def enhance_contrast(self):
+        args = 3
+        answer = simpledialog.askinteger(title="Ehance Contrast",
+                                         prompt="Value for quantization",
+                                         initialvalue=3,
+                                         parent=self.root,
+                                         minvalue=1, maxvalue=10)
+        if answer is not None:
+            args = answer
+        selected_tab_image = self._get_selected_image()
+        enhanced_image = ImageEnhance.Contrast(selected_tab_image)
+        self._apply_image_method(enhanced_image.enhance, 'enhance contrast', args)
 
     def find_edges_in_image(self):
         self._apply_filter_method('edges', ImageFilter.FIND_EDGES)
@@ -217,6 +243,7 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Mirror Image', command=self.controller.mirror_image)
         image_menu.add_command(label='Invert Image', command=self.controller.invert_image)
         image_menu.add_separator()
+        image_menu.add_command(label='Enhance Contrast', command = self.controller.enhance_contrast)
         image_menu.add_command(label='Auto Contrast', command=self.controller.apply_auto_contrast)
         image_menu.add_command(label='Blur', command=self.controller.blur_image)
         image_menu.add_command(label='Contour', command=self.controller.contour_image)
@@ -231,6 +258,7 @@ class PIGMenuBar(tk.Menu):
         image_menu.add_command(label='Colorize Image', command=self.controller.colorize_image)
         image_menu.add_command(label='Posterize Image', command=self.controller.posterize_image)
         image_menu.add_command(label='Solarize Image', command=self.controller.solarize_image)
+        image_menu.add_command(label='Quantize Image', command=self.controller.quantize_image)
         self.add_cascade(label='Image', menu=image_menu)
 
 
