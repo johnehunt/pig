@@ -93,6 +93,11 @@ class PIGEditorController:
     def select_blue_in_image(self):
         self._apply_simple_image_operation(highlight_blue_elements, 'blue')
 
+
+    def select_yellow_in_image(self):
+        self._apply_simple_image_operation(highlight_yellow_elements, 'blue')
+
+
     def colorize_image(self):
         selected_tab_view = self.get_current_tab_view()
         selected_tab_image = selected_tab_view.image
@@ -321,6 +326,7 @@ class PIGMenuBar(tk.Menu):
         color_menu.add_command(label='Highlight Red', command=self.controller.select_red_in_image)
         color_menu.add_command(label='Highlight Green', command=self.controller.select_green_in_image)
         color_menu.add_command(label='Highlight Blue', command=self.controller.select_blue_in_image)
+        color_menu.add_command(label='Highlight Yellow', command=self.controller.select_yellow_in_image)
         self.add_cascade(label='Color', menu=color_menu)
 
 
