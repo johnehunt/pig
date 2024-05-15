@@ -29,47 +29,40 @@ def highlight_color_element(pil_image,
 
     grey_scale_image = ImageOps.grayscale(pil_image).convert('RGBA')
 
-    myMerged_image = Image.new("RGBA", grey_scale_image.size)
-    myMerged_image.paste(grey_scale_image, (0, 0))
+    merged_image = Image.new("RGBA", grey_scale_image.size)
+    merged_image.paste(grey_scale_image, (0, 0))
 
     # Image.merge('RGB', (grey_scale_image, color_image))
-    myMerged_image.paste(color_image, (0, 0), mask_image)
+    merged_image.paste(color_image, (0, 0), mask_image)
 
-    return myMerged_image
+    return merged_image
 
 
 def highlight_red_elements(pil_image):
     # lower boundary RED color range values; Hue (0 - 10)
     lower1 = np.array([125, 5, 5])
     upper1 = np.array([180, 255, 255])
-
-    merged_image = highlight_color_element(pil_image, lower1, upper1)
-
-    return merged_image
+    new_image = highlight_color_element(pil_image, lower1, upper1)
+    return new_image
 
 
 def highlight_green_elements(pil_image):
     # lower boundary GREEN color range values; Hue (12-86)
     lower1 = np.array([20, 25, 25])
     upper1 = np.array([70, 255, 255])
-
-    merged_image = highlight_color_element(pil_image, lower1, upper1)
-
-    return merged_image
+    new_image = highlight_color_element(pil_image, lower1, upper1)
+    return new_image
 
 
 def highlight_blue_elements(pil_image):
     # lower boundary GREEN color range values; Hue (12-86)
-
     lower1 = np.array([100, 45, 45])
     upper1 = np.array([135, 255, 255])
+    new_image = highlight_color_element(pil_image, lower1, upper1)
+    return new_image
 
-    merged_image = highlight_color_element(pil_image, lower1, upper1)
-
-    return merged_image
-
-
-
-# pil_im = Image.open('car.jpeg')
-# merged_image = highlight_red_elements(pil_im)
-# merged_image.show()
+def highlight_yellow_elements(pil_image):
+    lower1 = np.array([15, 75, 70])
+    upper1 = np.array([90, 255, 255])
+    new_image = highlight_color_element(pil_image, lower1, upper1)
+    return new_image
