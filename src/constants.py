@@ -8,3 +8,4 @@ IMAGE_FILE_TYPES = [
         ('PNG Files', '*.png'),
         ('GIF Files', '*.gif'),
         ('TIFF Files', '*.tiff')]
+JSON_FILE_TYPES = [('JSON', '*.json'), ('JSN', '*.jsn')]

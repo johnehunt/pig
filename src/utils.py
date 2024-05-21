@@ -2,16 +2,22 @@
 from tkinter import filedialog, colorchooser
 from PIL import Image, ImageOps
 import numpy as np
-from constants import IMAGE_FILE_TYPES
+from constants import IMAGE_FILE_TYPES, JSON_FILE_TYPES
 from pipeline import Pipeline
 
 
-def select_open_filename():
+def select_open_image_filename():
     # open file dialog box to select image
     # The dialogue box has a title "Open"
     filename = filedialog.askopenfilename(title='Open Image', filetypes=IMAGE_FILE_TYPES)
     return filename
 
+
+def select_open_json_filename():
+    # open file dialog box to select image
+    # The dialogue box has a title "Open"
+    filename = filedialog.askopenfilename(title='Open Image', filetypes=JSON_FILE_TYPES)
+    return filename
 
 def select_save_filename():
     filename = filedialog.asksaveasfilename(title='Save Image', filetypes=IMAGE_FILE_TYPES)

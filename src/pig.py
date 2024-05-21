@@ -28,6 +28,15 @@ class PIGEditorController:
         label = self.editor.tabbed_view.nametowidget(selected_tab_id)
         return label
 
+    def load_pipeline(self):
+        filename = select_open_json_filename()
+        if filename != '':
+            pipeline_obj = load_json_pipeline(filename)
+            print(pipeline_obj)
+        else:
+            messagebox.showerror("Error", "No file selected")
+
+
     def get_tab_view(self, tabbed_view, filename=None, image=None):
         if image is None:
             image = Image.open(filename)
@@ -42,7 +51,7 @@ class PIGEditorController:
         return label
 
     def load_image(self):
-        filename = select_open_filename()
+        filename = select_open_image_filename()
         if filename != '':
             tab_view = self.get_tab_view(self.editor.tabbed_view, filename=filename)
             self.editor.tabbed_view.add(tab_view, text=filename)
@@ -275,6 +284,7 @@ class PIGMenuBar(tk.Menu):
         self.create_image_menu()
         self.create_contrast_menu()
         self.create_colour_menu()
+        self.create_pipeline_menu()
 
     def create_file_menu(self):
         file_menu = tk.Menu(self, tearoff=0)
@@ -328,6 +338,11 @@ class PIGMenuBar(tk.Menu):
         color_menu.add_command(label='Highlight Blue', command=self.controller.select_blue_in_image)
         color_menu.add_command(label='Highlight Yellow', command=self.controller.select_yellow_in_image)
         self.add_cascade(label='Color', menu=color_menu)
+
+    def create_pipeline_menu(self):
+        pipeline_menu = tk.Menu(self, tearoff=0)
+        pipeline_menu.add_command(label='Load Pipeline', command=self.controller.load_pipeline)
+        self.add_cascade(label='Pipeline', menu=pipeline_menu)
 
 
 class PIGEditor:
