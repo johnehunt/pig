@@ -1,0 +1,6 @@
+{"pipeline":  {
+  "start": "loadfile",
+  "steps": ["x", "y", "z"],
+  "end" : "savefile"
+  }
+}
