@@ -70,27 +70,5 @@ def merge2(im):
     return final2
 
 
-def load_json_pipeline(filename):
-    "Python function to read json file "
 
-    import json
-
-    pipeline_obj = None
-
-    # Opening JSON file
-    with open(filename, 'r') as file:
-
-        # returns JSON object as
-        # a dictionary
-        data = json.load(file)
-
-        # Iterating through the json
-        # list
-        pipeline_data= data['pipeline']
-
-        pipeline_obj = Pipeline(pipeline_data['start'], pipeline_data['steps'], pipeline_data['end'])
-
-        print(pipeline_obj)
-
-    return pipeline_obj
 

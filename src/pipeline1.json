@@ -1,6 +1,6 @@
 {"pipeline":  {
-  "start": "loadfile",
-  "steps": ["x", "y", "z"],
-  "end" : "savefile"
+  "start": "loadimage",
+  "operations": [["x"], ["y", "param1"], ["z", "param1", "param2"]],
+  "end" : "saveimage"
   }
 }

@@ -4,6 +4,7 @@ from tkinter import ttk, Label, messagebox, simpledialog
 from PIL import ImageTk, Image, ImageOps, ImageFilter, ImageEnhance
 from utils import *
 from cv_utils import *
+from pipeline import *
 
 
 class TabLabel(Label):
@@ -21,6 +22,7 @@ class PIGEditorController:
         self.editor = editor
         self.tab_views = []
         self.tab_counter = 1
+        self.pipeline = None
 
     def get_current_tab_view(self):
         # This code gets the currently selected tab
@@ -33,8 +35,12 @@ class PIGEditorController:
         if filename != '':
             pipeline_obj = load_json_pipeline(filename)
             print(pipeline_obj)
+            self.pipeline = pipeline_obj
         else:
             messagebox.showerror("Error", "No file selected")
+
+    def run_pipeline(self):
+        self.pipeline.run_pipeline()
 
 
     def get_tab_view(self, tabbed_view, filename=None, image=None):
@@ -342,6 +348,7 @@ class PIGMenuBar(tk.Menu):
     def create_pipeline_menu(self):
         pipeline_menu = tk.Menu(self, tearoff=0)
         pipeline_menu.add_command(label='Load Pipeline', command=self.controller.load_pipeline)
+        pipeline_menu.add_command(label='Run Pipeline', command=self.controller.run_pipeline)
         self.add_cascade(label='Pipeline', menu=pipeline_menu)
 
 
